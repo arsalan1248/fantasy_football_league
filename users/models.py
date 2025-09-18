@@ -2,11 +2,17 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 from core.models import BaseModelWithAudit
+from users.managers import CustomUserManager
 
 
 # Create your models here.
 class CustomUser(AbstractUser, BaseModelWithAudit):
     email = models.EmailField(unique=True)
+
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ["username"]
+
+    objects = CustomUserManager()
 
     def __str__(self):
         return self.username

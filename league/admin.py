@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from core.models import BaseAdminWithAudit
+from core.admin import BaseAdminWithAudit
 from league.models import Player, Team
 
 

@@ -1,21 +1,15 @@
 from django.contrib import admin
 
-from core.models import BaseAdminWithAudit
+from core.admin import BaseAdminWithAudit
 from transactions.models import PlayerTransaction, TransactionRecord
 
 
-# class TransactionRecordInline(admin.TabularInline):
-#     model = TransactionRecord
-#     extra = 0  # no extra empty rows
-#     readonly_fields = ("amount", "transaction_type", "team")
-#     can_delete = False  # optional: prevent deletion from inline
 class TransactionRecordInline(admin.TabularInline):
     model = TransactionRecord
-    extra = 0  # no extra empty rows
+    extra = 0  
     fields = ("team", "amount", "transaction_type") 
-    readonly_fields = ("amount", "transaction_type", "team")  # prevent editing
+    readonly_fields = ("amount", "transaction_type", "team")
     can_delete = False
-    show_change_link = True  # optional, allows opening the record in full page
 
 
 @admin.register(PlayerTransaction)

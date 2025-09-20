@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from core.models import BaseAdminWithAudit
+from core.admin import BaseAdminWithAudit
 from users.models import CustomUser, UserProfile
 
 

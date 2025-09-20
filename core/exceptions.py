@@ -1,15 +1,17 @@
 from rest_framework.views import exception_handler
 from rest_framework.response import Response
-from rest_framework import status
-from rest_framework import exceptions
-
 
 def custom_exception_handler(exc, context):
     response = exception_handler(exc, context)
-
-    if response is not None:
-        return Response({"errors": response.data}, status=response.status_code)
-
-    return Response(
-        {"errors": {"detail": str(exc)}}, status=status.HTTP_400_BAD_REQUEST
-    )
+    
+    if response is not None and response.status_code == 401:
+        return Response(
+            {
+                "error": "Authentication failed",
+                "detail": "Token is invalid or expired",
+                "status_code": 401
+            },
+            status=401
+        )
+    
+    return response

@@ -37,15 +37,16 @@ class TeamSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 {"user_profile": "A valid user profile is required to create a team."}
             )
+        
+        if hasattr(request.user.profile, "team"):
+            raise serializers.ValidationError(
+                {"user_profile": "This user already has a team."}
+            )
 
         return values
 
     def create(self, validated_data):
         request = self.context.get("request")
-        if hasattr(request.user.profile, "team"):
-            raise serializers.ValidationError(
-                {"user_profile": "This user already has a team."}
-            )
 
         validated_data["user_profile"] = request.user.profile
         return super().create(validated_data)

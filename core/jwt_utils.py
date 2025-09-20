@@ -2,8 +2,6 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.tokens import AccessToken
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.exceptions import TokenError
-from rest_framework_simplejwt.exceptions import InvalidToken, AuthenticationFailed
-from rest_framework_simplejwt.authentication import JWTAuthentication
 
 
 def get_tokens_for_user(user):

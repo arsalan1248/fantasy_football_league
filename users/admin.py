@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
+from core.models import BaseAdminWithAudit
 from users.models import CustomUser, UserProfile
 
 
@@ -20,7 +21,7 @@ class CustomUserAdmin(UserAdmin):
 
 
 @admin.register(UserProfile)
-class UserProfileAdmin(admin.ModelAdmin):
+class UserProfileAdmin(BaseAdminWithAudit):
     list_display = (
         "user__username",
         "user",

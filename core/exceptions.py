@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import exceptions
 
+
 def custom_exception_handler(exc, context):
     response = exception_handler(exc, context)
 
@@ -12,4 +13,3 @@ def custom_exception_handler(exc, context):
     return Response(
         {"errors": {"detail": str(exc)}}, status=status.HTTP_400_BAD_REQUEST
     )
-

@@ -32,3 +32,6 @@ class UserProfile(BaseModelWithAudit):
         "Profile Picture", upload_to="profile_picture/", null=True, blank=True
     )
     date_of_birth = models.DateField(blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.user.get_full_name}"

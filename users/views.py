@@ -115,7 +115,6 @@ class ResetPasswordView(APIView):
 class UserProfileViewSet(viewsets.ModelViewSet):
     from rest_framework.decorators import action
 
-
     serializer_class = UserProfileSerializer
     permission_classes = [IsAuthenticated]
     http_method_names = ["get", "patch", "put"]
@@ -133,7 +132,9 @@ class UserProfileViewSet(viewsets.ModelViewSet):
             serializer = self.get_serializer(profile)
             return Response(serializer.data)
 
-        serializer = self.get_serializer(profile, data=request.data, partial=(request.method == "PATCH"))
+        serializer = self.get_serializer(
+            profile, data=request.data, partial=(request.method == "PATCH")
+        )
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)

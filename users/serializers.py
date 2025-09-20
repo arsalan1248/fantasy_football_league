@@ -123,7 +123,6 @@ class UserProfileSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ["id"]
 
-
     def update(self, instance, validated_data):
         user_data = validated_data.pop("user", {})
 

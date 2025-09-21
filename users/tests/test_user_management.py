@@ -7,6 +7,7 @@ from django.urls import reverse
 
 User = get_user_model()
 
+
 def generate_test_image(format="JPEG", color=(255, 0, 0)):
     """Generate a simple in-memory image."""
     file = BytesIO()
@@ -15,6 +16,7 @@ def generate_test_image(format="JPEG", color=(255, 0, 0)):
     file.seek(0)
     return file.getvalue()
 
+
 class UserAPITest(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -22,7 +24,7 @@ class UserAPITest(TestCase):
         payload = {
             "username": "newuser",
             "email": "newuser@example.com",
-            "password": "Pass1234!"
+            "password": "Pass1234!",
         }
         url = reverse("user-register")
         self.registration_response = self.client.post(url, payload)
@@ -30,23 +32,28 @@ class UserAPITest(TestCase):
         self.user = User.objects.get(email="newuser@example.com")
 
     def test_user_registration(self):
-        
+
         self.assertEqual(self.registration_response.status_code, 201)
-        self.assertEqual(self.registration_response.data["email"], "newuser@example.com")
+        self.assertEqual(
+            self.registration_response.data["email"], "newuser@example.com"
+        )
+
+    def test_user_login(self):
+        payload = {"email": "newuser@example.com", "password": "Pass1234!"}
+        response = self.client.post(reverse("token_obtain_pair"), payload)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIsNotNone(response.data["access"])
 
     def test_user_profile_update_with_photo(self):
         from django.core.files.uploadedfile import SimpleUploadedFile
 
         self.client.force_authenticate(user=self.user)
         photo_file = SimpleUploadedFile(
-            "update.jpg",
-            generate_test_image(),
-            content_type="image/jpeg"
+            "update.jpg", generate_test_image(), content_type="image/jpeg"
         )
         response = self.client.patch(
-            reverse("profile-me"),
-            {"profile_picture": photo_file},
-            format="multipart"
+            reverse("profile-me"), {"profile_picture": photo_file}, format="multipart"
         )
         self.assertEqual(response.status_code, 200)
         self.assertIn("profile_picture", response.data)
@@ -61,3 +68,27 @@ class UserAPITest(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertIn(response.data["bio"], "test")
+
+    def test_reset_user_password(self):
+        payload = {
+            "username": "newuser1",
+            "email": "newuser1@example.com",
+            "password": "Pass1234!",
+        }
+        url = reverse("user-register")
+        self.registration_response = self.client.post(url, payload)
+
+        reset_pass_payload = {
+            "email": "newuser1@example.com",
+            "current_password": "Pass1234!",
+            "new_password": "123456",
+            "confirm_new_password": "123456",
+        }
+
+        reset_password_resp = self.client.post(
+            reverse("reset_password"), reset_pass_payload
+        )
+        self.assertEqual(reset_password_resp.status_code, 200)
+        self.assertEqual(
+            reset_password_resp.data["message"], "Password reset successfully."
+        )

@@ -3,7 +3,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, status, filters
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from django.core.exceptions import ValidationError
+from rest_framework.exceptions import ValidationError
 
 from league.filters import PlayerFilter
 from transactions.models import PlayerTransaction, TransactionRecord
@@ -68,7 +68,6 @@ class PlayerViewset(viewsets.ModelViewSet):
     ordering_fields = ["value"]
     filterset_class = PlayerFilter
 
-
     def get_queryset(self):
         if self.action == "list":
             return Player.active.all()
@@ -120,7 +119,9 @@ class PlayerViewset(viewsets.ModelViewSet):
 
     def _validate_purchase(self, player, buyer_team):
         if not buyer_team.can_add_more_players:
-            raise ValidationError("Cannot buy player: team already has maximum number of players.")
+            raise ValidationError(
+                "Cannot buy player: team already has maximum number of players."
+            )
 
         if player.team == buyer_team:
             raise ValidationError("You already own this player.")
@@ -128,11 +129,15 @@ class PlayerViewset(viewsets.ModelViewSet):
             raise ValidationError("Player is not for sale.")
         if player.team and player.value > buyer_team.capital:
             raise ValidationError("Insufficient capital to buy this player.")
-        
-        team_positions_by_type = buyer_team.players.filter(position=player.position).count()
+
+        team_positions_by_type = buyer_team.players.filter(
+            position=player.position
+        ).count()
         position_limit = buyer_team.POSITION_LIMITS[player.position]
         if team_positions_by_type >= position_limit:
-            raise ValidationError(f"{buyer_team.name} already has {position_limit} {player.get_position_display()}")
+            raise ValidationError(
+                f"{buyer_team.name} already has {position_limit} {player.get_position_display()}"
+            )
 
     def _buy_free_agent(self, player, buyer_team):
         with transaction.atomic():
@@ -141,7 +146,7 @@ class PlayerViewset(viewsets.ModelViewSet):
 
         bought, response_msg = True, "Player successfully bought (free agent)"
         return bought, response_msg
-        
+
     def _buy_for_sale_player(self, player, buyer_team):
         seller_team = player.team
         with transaction.atomic():
@@ -155,7 +160,7 @@ class PlayerViewset(viewsets.ModelViewSet):
 
         bought, response_msg = True, "Player successfully bought"
         return bought, response_msg
-        
+
     def _transfer_player(self, player, buyer_team, seller_team):
         player.team = buyer_team
         player.is_for_sale = False

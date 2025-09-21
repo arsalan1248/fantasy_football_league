@@ -5,6 +5,7 @@ from .models import Player, Team
 from faker import Faker
 from django.db import transaction
 
+
 @receiver(post_save, sender=Team)
 def create_initial_team_players(sender, instance, created, **kwargs):
     if created:
@@ -28,4 +29,3 @@ def create_initial_team_players(sender, instance, created, **kwargs):
 
         with transaction.atomic():
             Player.objects.bulk_create(players_to_create)
-                

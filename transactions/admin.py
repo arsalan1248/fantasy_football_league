@@ -6,8 +6,8 @@ from transactions.models import PlayerTransaction, TransactionRecord
 
 class TransactionRecordInline(admin.TabularInline):
     model = TransactionRecord
-    extra = 0  
-    fields = ("team", "amount", "transaction_type") 
+    extra = 0
+    fields = ("team", "amount", "transaction_type")
     readonly_fields = ("amount", "transaction_type", "team")
     can_delete = False
 
@@ -19,9 +19,7 @@ class PlayerTransactionAdmin(BaseAdminWithAudit):
         "player",
         "is_free_agent_at_transaction",
     )
-    search_fields = (
-        "transaction_no",
-    )
+    search_fields = ("transaction_no",)
     list_filter = ("player",)
     inlines = [TransactionRecordInline]
 
@@ -33,10 +31,7 @@ class TransactionRecordAdmin(BaseAdminWithAudit):
         "team",
         "amount",
         "transaction_type",
-        "transaction__is_free_agent_at_transaction"
+        "transaction__is_free_agent_at_transaction",
     )
-    search_fields = (
-        "transaction_type",
-    )
-    list_filter = ("team","transaction_type")
-    
+    search_fields = ("transaction_type",)
+    list_filter = ("team", "transaction_type")

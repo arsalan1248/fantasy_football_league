@@ -61,6 +61,3 @@ class BaseModelWithAudit(BaseModel):
         self.deleted_at = timezone.now()
         self.deleted_by = user
         self.save(update_fields=["is_deleted", "deleted_at", "deleted_by"])
-
-
-

@@ -34,10 +34,10 @@ class TransferPlayerTest(TestCase):
         self.assertEqual(buyer_team.capital, 4000000)
         self.assertEqual(seller_team.capital, 6000000)
         self.assertTrue(player.value > 1000000)
-        self.assertCountEqual(player.transfers.count(), 1)
+        self.assertEqual(player.transfers.count(), 1)
 
         trx = player.transfers.first()
-        self.assertCountEqual(trx.transactionrecord_set.count(), 2)
+        self.assertEqual(trx.transactionrecord_set.count(), 2)
 
     def test_cannot_buy_own_player(self):
         team = TeamFactory(user_profile=self.profile)

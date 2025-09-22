@@ -33,4 +33,4 @@ class UserProfileModelTest(TestCase):
             name="test_image.jpg", content=b"file_content", content_type="image/jpeg"
         )
         profile = UserProfile.objects.create(user=self.user, profile_picture=photo_file)
-        self.assertTrue(profile.profile_picture.name.endswith("test_image.jpg"))
+        self.assertTrue(profile.profile_picture.name.startswith("profile_picture/test_image"))

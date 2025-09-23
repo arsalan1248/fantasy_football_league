@@ -25,8 +25,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . /apps/
 
 # Make entrypoint executable
-RUN dos2unix /apps/entrypoint.sh \
-    && chmod +x /apps/entrypoint.sh \
+RUN chmod +x /apps/entrypoint.sh \
+    && dos2unix /apps/entrypoint.sh \
     && echo "[INFO] Converted entrypoint.sh to LF and made it executable"
 
 # Expose port

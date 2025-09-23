@@ -10,6 +10,7 @@ WORKDIR /apps
 # Install system dependencies
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
+        dos2unix \
         build-essential \
         libpq-dev \
         netcat-openbsd \
@@ -24,7 +25,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . /apps/
 
 # Make entrypoint executable
-RUN chmod +x /apps/entrypoint.sh
+RUN dos2unix /apps/entrypoint.sh \
+    && chmod +x /apps/entrypoint.sh \
+    && echo "[INFO] Converted entrypoint.sh to LF and made it executable"
 
 # Expose port
 EXPOSE 8000
